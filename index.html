@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TECH BRIAN & MERAB ERROR | AI Hosting</title>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono&display=swap');
+
+    :root {
+      --neon-cyan: #00f7ff;
+      --neon-magenta: #ff00ff;
+      --neon-purple: #9d00ff;
+      --neon-green: #00ff88;
+      --bg: #0a001f;
+      --card: rgba(15, 5, 40, 0.78);
+      --text: #e0faff;
+      --accent: #00f7ff;
+      --glow: 0 0 25px rgba(0, 247, 255, 0.7);
+    }
+
+    [data-theme="light"] {
+      --bg: #f0f8ff;
+      --card: rgba(255, 255, 255, 0.94);
+      --text: #1a0033;
+      --accent: #0066ff;
+      --glow: 0 0 15px rgba(0, 100, 255, 0.5);
+      --neon-cyan: #0066ff;
+      --neon-magenta: #ff33aa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* === BACKGROUND LAYERS === */
+    #particles-js {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -2;
+    }
+
+    .wave-bg {
+      position: fixed;
+      bottom: 0; left: 0;
+      width: 100%; height: 60vh;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      width: 200%;
+      height: 100%;
+      fill: none;
+      stroke: var(--neon-cyan);
+      stroke-width: 3;
+      opacity: 0.3;
+      animation: waveMove 15s linear infinite;
+    }
+
+    @keyframes waveMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === SPLASH SCREEN === */
+    #splash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 1.5s ease;
+    }
+
+    .logo-3d {
+      width: 160px; height: 160px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: rotate3d 6s infinite linear;
+    }
+
+    .cube {
+      position: absolute;
+      width: 100%; height: 100%;
+      border: 3px solid var(--neon-cyan);
+      box-shadow: var(--glow);
+    }
+
+    .cube::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border: 2px solid var(--neon-magenta);
+      box-shadow: 0 0 20px var(--neon-magenta);
+    }
+
+    @keyframes rotate3d {
+      0% { transform: rotateX(0deg) rotateY(0deg); }
+      100% { transform: rotateX(360deg) rotateY(360deg); }
+    }
+
+    .glitch {
+      font-size: 3.2rem;
+      font-weight: 900;
+      color: white;
+      letter-spacing: 8px;
+      position: relative;
+    }
+
+    .glitch::before, .glitch::after {
+      content: 'TECH BRIAN & MERAB ERROR';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      color: var(--neon-cyan);
+      animation: glitch 2s infinite;
+    }
+
+    .glitch::before { left: 3px; text-shadow: -3px 0 var(--neon-magenta); animation: glitch1 0.6s infinite; }
+    .glitch::after { left: -3px; text-shadow: 3px 0 var(--neon-green); animation: glitch2 0.8s infinite; }
+
+    @keyframes glitch1 {
+      0%,100% { clip-path: inset(0 0 0 0); }
+      25% { clip-path: inset(20% 0 60% 0); }
+      50% { clip-path: inset(80% 0 10% 0); }
+      75% { clip-path: inset(40% 0 50% 0); }
+    }
+
+    @keyframes glitch2 {
+      0%,100% { clip-path: inset(0 0 0 0); }
+      33% { clip-path: inset(70% 0 20% 0); }
+      66% { clip-path: inset(10% 0 80% 0); }
+    }
+
+    /* === MAIN APP === */
+    #app {
+      display: none;
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* === FLOATING CONTROLS === */
+    .theme-toggle, .ai-toggle {
+      position: fixed;
+      width: 56px; height: 56px;
+      background: var(--card);
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--accent);
+      cursor: pointer;
+      box-shadow: var(--glow);
+      z-index: 100;
+      transition: all 0.4s;
+      backdrop-filter: blur(12px);
+    }
+
+    .theme-toggle { top: 20px; right: 20px; }
+    .ai-toggle { bottom: 30px; right: 30px; }
+
+    .theme-toggle:hover, .ai-toggle:hover {
+      transform: scale(1.2) rotate(360deg);
+      box-shadow: 0 0 50px var(--accent);
+    }
+
+    /* === LIVE SYSTEM VIEW === */
+    #liveView {
+      position: fixed;
+      top: 20px; left: 20px;
+      background: var(--card);
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--accent);
+      box-shadow: var(--glow);
+      font-family: 'Roboto Mono', monospace;
+      color: var(--neon-green);
+      font-size: 0.82rem;
+      max-width: 260px;
+      z-index: 99;
+      backdrop-filter: blur(10px);
+    }
+
+    #liveView h4 {
+      color: var(--neon-cyan);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-line {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+      font-size: 0.85rem;
+    }
+
+    /* === HEADER === */
+    header {
+      text-align: center;
+      margin: 30px 0 40px;
+      padding: 0 20px;
+    }
+
+    header h1 {
+      font-size: 3.2rem;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: var(--glow);
+    }
+
+    header p {
+      color: var(--neon-green);
+      margin-top: 10px;
+      font-size: 1.1rem;
+    }
+
+    /* === GRID LAYOUT === */
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 60px;
+    }
+
+    @media (max-width: 992px) {
+      .container { grid-template-columns: 1fr; }
+      header h1 { font-size: 2.6rem; }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 26px;
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 247, 255, 0.3);
+      box-shadow: var(--glow);
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+
+    .card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 0 50px var(--accent);
+    }
+
+    .card h3 {
+      color: var(--accent);
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 2px solid var(--accent);
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+
+    .upload-area {
+      border: 3px dashed var(--accent);
+      border-radius: 16px;
+      padding: 48px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s;
+    }
+
+    .upload-area:hover {
+      background: rgba(0, 247, 255, 0.12);
+      border-color: var(--neon-magenta);
+    }
+
+    .upload-area.dragover {
+      background: rgba(255, 0, 255, 0.2);
+      border-color: var(--neon-magenta);
+    }
+
+    button {
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-magenta));
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 16px;
+      box-shadow: var(--glow);
+      transition: all 0.4s;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 40px var(--neon-magenta);
+    }
+
+    /* === PREVIEW PANEL === */
+    .preview-panel {
+      margin-top: 18px;
+      background: rgba(10, 5, 30, 0.85);
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid var(--accent);
+      display: none;
+    }
+
+    .preview-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .preview-tab {
+      padding: 8px 14px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border: 1px solid var(--accent);
+      white-space: nowrap;
+    }
+
+    .preview-tab.active {
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+    }
+
+    .preview-content {
+      background: #111;
+      border-radius: 8px;
+      padding: 14px;
+      max-height: 360px;
+      overflow: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+
+    .preview-iframe {
+      width: 100%;
+      height: 360px;
+      border: none;
+      border-radius: 8px;
+      background: white;
+    }
+
+    /* === SITES LIST === */
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 18px 0;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .stat {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 14px;
+      border-radius: 12px;
+      text-align: center;
+      min-width: 100px;
+      border: 1px solid var(--accent);
+      box-shadow: var(--glow);
+    }
+
+    .stat h4 { color: var(--accent); font-size: 0.9rem; }
+    .stat p { font-size: 1.5rem; font-weight: bold; color: var(--neon-green); }
+
+    .site-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .site-item {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 5px solid var(--neon-cyan);
+      transition: all 0.3s;
+    }
+
+    .site-item:hover {
+      background: rgba(0, 247, 255, 0.15);
+      border-left-color: var(--neon-magenta);
+    }
+
+    .site-item a {
+      color: var(--neon-cyan);
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .site-item a:hover {
+      color: var(--neon-magenta);
+      text-decoration: underline;
+    }
+
+    /* === AI CHAT === */
+    #aiChat {
+      position: fixed;
+      bottom: 100px; right: 30px;
+      width: 380px;
+      height: 520px;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(0, 247, 255, 0.5);
+      display: none;
+      flex-direction: column;
+      border: 1px solid var(--accent);
+      z-index: 999;
+      backdrop-filter: blur(16px);
+    }
+
+    .ai-header {
+      padding: 14px 18px;
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-magenta));
+      color: #000;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 20px 20px 0 0;
+    }
+
+    .ai-header h3 {
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ai-body {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 0.94rem;
+      line-height: 1.4;
+      animation: fadeIn 0.4s;
+    }
+
+    .user { align-self: flex-end; background: var(--neon-cyan); color: #000; }
+    .ai { align-self: flex-start; background: rgba(0, 0, 0, 0.5); color: var(--text); border: 1px solid var(--neon-green); }
+
+    .thinking {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--neon-green);
+      font-style: italic;
+    }
+
+    .brain {
+      width: 18px; height: 18px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      box-shadow: 0 0 15px var(--neon-green);
+      animation: pulseBrain 1.5s infinite;
+    }
+
+    @keyframes pulseBrain {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+
+    .ai-input {
+      display: flex;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border-top: 1px solid var(--accent);
+      gap: 8px;
+      align-items: center;
+    }
+
+    .ai-input input {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 50px;
+      border: 1px solid var(--accent);
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--text);
+      font-size: 0.94rem;
+    }
+
+    .ai-input button {
+      width: 40px; height: 40px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+    }
+
+    .ai-input button:hover {
+      background: var(--neon-magenta);
+      transform: scale(1.1);
+    }
+
+    /* === FOOTER === */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 40px;
+      border-top: 1px dashed var(--accent);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .footer-links a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: var(--card);
+      border-radius: 50px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      border: 1px solid var(--accent);
+      transition: all 0.4s;
+      box-shadow: var(--glow);
+    }
+
+    .footer-links a:hover {
+      background: var(--accent);
+      color: #000;
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px var(--accent);
+    }
+
+    .portfolio-link {
+      background: linear-gradient(45deg, var(--neon-magenta), var(--neon-purple)) !important;
+      color: white !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PARTICLES -->
+  <div id="particles-js"></div>
+
+  <!-- WAVES -->
+  <div class="wave-bg">
+    <svg width="200%" height="100%" preserveAspectRatio="none">
+      <path class="wave" d="M0,50 Q300,10 600,50 T1200,50 T1800,50 V100 H0 Z" />
+      <path class="wave" d="M0,60 Q300,20 600,60 T1200,60 T1800,60 V100 H0 Z" style="stroke: var(--neon-magenta); opacity: 0.3;" />
+    </svg>
+  </div>
+
+  <!-- SPLASH -->
+  <div id="splash">
+    <div class="logo-3d"><div class="cube"></div></div>
+    <h1 class="glitch">TECH BRIAN & MERAB ERROR</h1>
+    <p style="color: var(--neon-green); margin-top: 16px; font-size: 1.1rem;">AI QUANTUM HOSTING v10</p>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app">
+    <!-- Controls -->
+    <div class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></div>
+    <div class="ai-toggle" id="aiToggle"><i class="fas fa-robot"></i></div>
+
+    <!-- Live System -->
+    <div id="liveView">
+      <h4><i class="fas fa-microchip"></i> SYSTEM CORE</h4>
+      <div class="stat-line"><span>CPU</span><span id="cpu">0%</span></div>
+      <div class="stat-line"><span>MEM</span><span id="mem">0MB</span></div>
+      <div class="stat-line"><span>NET</span><span id="net">0KB/s</span></div>
+      <div class="stat-line"><span>UPTIME</span><span id="uptime">00:00</span></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+      <h1>TECH BRIAN & MERAB ERROR</h1>
+      <p>Deploy Static Sites with AI Power</p>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="container">
+      <!-- Upload Card -->
+      <div class="card">
+        <h3><i class="fas fa-rocket"></i> Quantum Upload</h3>
+        <input type="text" id="siteName" placeholder="my-awesome-site" />
+        <div class="upload-area" id="uploadArea">
+          <i class="fas fa-cloud-upload-alt" style="font-size: 3.8rem; color: var(--accent);"></i>
+          <p>Drop HTML, CSS, JS, ZIP</p>
+          <input type="file" id="fileInput" multiple style="display: none;" accept=".html,.css,.js,.zip"/>
+        </div>
+
+        <div id="previewPanel" class="preview-panel">
+          <div class="preview-tabs" id="previewTabs"></div>
+          <div id="previewContent" class="preview-content"></div>
+        </div>
+
+        <button id="hostBtn">LAUNCH TO ORBIT</button>
+      </div>
+
+      <!-- Sites Card -->
+      <div class="card">
+        <h3><i class="fas fa-globe"></i> Live Sites</h3>
+        <div class="stats">
+          <div class="stat"><h4>Hosted</h4><p id="siteCount">0</p></div>
+          <div class="stat"><h4>Size</h4><p id="totalSize">0B</p></div>
+        </div>
+        <div class="site-list" id="siteList">
+          <p style="text-align:center; color:#777; margin:20px 0;">No sites hosted yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI CHAT -->
+    <div id="aiChat">
+      <div class="ai-header">
+        <h3>Queen Mera-B AI</h3>
+        <button id="closeAI" style="background:none;border:none;color:#000;font-size:1.4rem;cursor:pointer;">×</button>
+      </div>
+      <div class="ai-body" id="aiBody">
+        <div class="message ai">Greetings, Master. I am Queen Mera-B. How may I serve?</div>
+      </div>
+      <div class="ai-input">
+        <input type="text" id="aiInput" placeholder="Ask me anything..." />
+        <label style="cursor:pointer;">
+          <input type="file" id="aiFile" style="display:none;" accept="image/*,.txt,.js,.html,.css" />
+          <button type="button"><i class="fas fa-paperclip"></i></button>
+        </label>
+        <button id="aiSend"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Coded by <strong style="color:var(--neon-cyan);">Tech Brian</strong></p>
+      <div class="footer-links">
+        <a href="https://wa.me/254748950572"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <a href="mailto:bridah888@gmail.com"><i class="fas fa-envelope"></i> Email</a>
+        <a href="tel:0748950572"><i class="fas fa-phone"></i> Call</a>
+        <a href="https://github.com/Bibs-Hacker"><i class="fab fa-github"></i> GitHub</a>
+        <a href="YOUR_PORTFOLIO_LINK" class="portfolio-link"><i class="fas fa-briefcase"></i> Portfolio</a>
+      </div>
+      <p><small>© 2025 TECH BRIAN & MERAB ERROR | Quantum Realm</small></p>
+    </footer>
+  </div>
+
+  <script>
+    // === PARTICLES ===
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 90 },
+        color: { value: ['#00f7ff', '#ff00ff', '#00ff88'] },
+        shape: { type: 'circle' },
+        opacity: { value: 0.6, random: true },
+        size: { value: 3, random: true },
+        line_linked: { enable: true, distance: 140, color: '#00f7ff', opacity: 0.3, width: 1 },
+        move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out' }
+      },
+      interactivity: {
+        events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' } },
+        modes: { repulse: { distance: 100 }, push: { particles_nb: 4 } }
+      },
+      retina_detect: true
+    });
+
+    // === SPLASH FADE ===
+    setTimeout(() => {
+      document.getElementById('splash').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+      }, 1500);
+    }, 4000);
+
+    // === THEME & AI TOGGLE ===
+    document.getElementById('themeToggle').onclick = () => {
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      document.querySelector('#themeToggle i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    };
+
+    const aiChat = document.getElementById('aiChat');
+    document.getElementById('aiToggle').onclick = () => aiChat.style.display = aiChat.style.display === 'flex' ? 'none' : 'flex';
+    document.getElementById('closeAI').onclick = () => aiChat.style.display = 'none';
+
+    // === GEMINI AI ===
+    const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY';
+    const aiBody = document.getElementById('aiBody');
+    const aiInput = document.getElementById('aiInput');
+    const aiSend = document.getElementById('aiSend');
+
+    aiSend.onclick = sendMessage;
+    aiInput.addEventListener('keypress', e => e.key === 'Enter' && sendMessage());
+
+    async function sendMessage() {
+      const text = aiInput.value.trim();
+      if (!text) return;
+      appendMessage('user', text);
+
+      const thinking = document.createElement('div');
+      thinking.className = 'message ai thinking';
+      thinking.innerHTML = `<div class="brain"></div> Thinking...`;
+      aiBody.appendChild(thinking);
+      aiBody.scrollTop = aiBody.scrollHeight;
+
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text }] }] })
+        });
+        const data = await res.json();
+        const reply = data.candidates[0].content.parts[0].text;
+        aiBody.removeChild(thinking);
+        appendMessage('ai', reply);
+      } catch {
+        aiBody.removeChild(thinking);
+        appendMessage('ai', 'AI offline. Check API key.');
+      }
+
+      aiInput.value = '';
+    }
+
+    function appendMessage(sender, text) {
+      const msg = document.createElement('div');
+      msg.className = `message ${sender}`;
+      msg.textContent = text;
+      aiBody.appendChild(msg);
+      aiBody.scrollTop = aiBody.scrollHeight;
+    }
+
+    // === LIVE SYSTEM ===
+    setInterval(() => {
+      document.getElementById('cpu').textContent = Math.floor(Math.random() * 35 + 10) + '%';
+      document.getElementById('mem').textContent = Math.floor(Math.random() * 300 + 100) + 'MB';
+      document.getElementById('net').textContent = Math.floor(Math.random() * 600) + 'KB/s';
+      document.getElementById('uptime').textContent = new Date().toISOString().substr(11, 8);
+    }, 2000);
+
+    // === FILE UPLOAD & PREVIEW ===
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const siteNameInput = document.getElementById('siteName');
+    const previewPanel = document.getElementById('previewPanel');
+    const previewTabs = document.getElementById('previewTabs');
+    const previewContent = document.getElementById('previewContent');
+    const hostBtn = document.getElementById('hostBtn');
+    let selectedFiles = [];
+
+    ['dragenter', 'dragover'].forEach(e => uploadArea.addEventListener(e, () => uploadArea.classList.add('dragover')));
+    ['dragleave', 'drop'].forEach(e => uploadArea.addEventListener(e, () => uploadArea.classList.remove('dragover')));
+    uploadArea.onclick = () => fileInput.click();
+    uploadArea.ondrop = e => { e.preventDefault(); handleFiles(e.dataTransfer.files); };
+    fileInput.onchange = () => handleFiles(fileInput.files);
+
+    function handleFiles(files) {
+      selectedFiles = Array.from(files);
+      if (!siteNameInput.value.trim()) return alert("Enter site name!");
+      previewPanel.style.display = 'block';
+      renderTabs();
+      showPreview(selectedFiles[0]);
+    }
+
+    function renderTabs() {
+      previewTabs.innerHTML = '';
+      selectedFiles.forEach((f, i) => {
+        const tab = document.createElement('div');
+        tab.className = 'preview-tab';
+        tab.textContent = f.name;
+        tab.onclick = () => {
+          document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          showPreview(f);
+        };
+        if (i === 0) tab.classList.add('active');
+        previewTabs.appendChild(tab);
+      });
+    }
+
+    async function showPreview(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (ext === 'html') {
+          previewContent.innerHTML = `<iframe class="preview-iframe" srcdoc="${reader.result.replace(/</g, '&lt;')}"></iframe>`;
+        } else {
+          const lang = { css: 'css', js: 'javascript' }[ext] || 'markup';
+          previewContent.innerHTML = `<pre><code class="language-${lang}">${reader.result.replace(/</g, '&lt;')}</code></pre>`;
+          Prism.highlightAll();
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // === SUPABASE ===
+    const supabase = Supabase.createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+    hostBtn.onclick = async () => {
+      if (selectedFiles.length === 0) return alert("No files!");
+      hostBtn.textContent = "Launching...";
+      await new Promise(r => setTimeout(r, 1800));
+      const size = (selectedFiles.reduce((a, f) => a + f.size, 0) / 1024).toFixed(1);
+      await supabase.from('sites').insert([{ name: siteNameInput.value, url: `https://tbme.free.nf/${siteNameInput.value}/`, size: size + "KB", created_at: new Date().toISOString() }]);
+      alert("Launched!");
+      siteNameInput.value = ''; selectedFiles = []; previewPanel.style.display = 'none'; fileInput.value = '';
+      hostBtn.textContent = "LAUNCH TO ORBIT";
+    };
+
+    supabase.channel('sites').on('postgres_changes', { event: '*', schema: 'public', table: 'sites' }, () => renderSites()).subscribe();
+    async function renderSites() {
+      const { data } = await supabase.from('sites').select();
+      document.getElementById('siteCount').textContent = data.length;
+      document.getElementById('totalSize').textContent = data.reduce((a, s) => a + parseFloat(s.size), 0).toFixed(1) + "KB";
+      const list = document.getElementById('siteList');
+      list.innerHTML = data.length ? data.map(s => `
+        <div class="site-item">
+          <div><strong>${s.name}</strong><br><small>${new Date(s.created_at).toLocaleString()}</small></div>
+          <a href="${s.url}" target="_blank">Visit →</a>
+        </div>
+      `).join('') : '<p style="text-align:center; color:#777; margin:20px 0;">No sites hosted yet.</p>';
+    }
+    renderSites();
+  </script>
+</body>
+</html>
